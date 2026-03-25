@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ranking Tapitas 🎉</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --verde: #2d6a4f;
+    --verde-claro: #52b788;
+    --verde-menta: #b7e4c7;
+    --amarillo: #f9c74f;
+    --naranja: #f77f00;
+    --crema: #fefae0;
+    --marron: #3d2b1f;
+    --gris-suave: #f0ede6;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--crema);
+    color: var(--marron);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* FONDO DECORATIVO */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(circle at 10% 20%, rgba(82,183,136,0.15) 0%, transparent 40%),
+      radial-gradient(circle at 90% 80%, rgba(249,199,79,0.2) 0%, transparent 40%),
+      radial-gradient(circle at 50% 50%, rgba(247,127,0,0.07) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* TAPITAS FLOTANTES DECORATIVAS */
+  .tapitas-bg {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+  }
+  .tapita-float {
+    position: absolute;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    opacity: 0.12;
+    animation: flotar linear infinite;
+  }
+
+  @keyframes flotar {
+    0%   { transform: translateY(100vh) rotate(0deg); }
+    100% { transform: translateY(-120px) rotate(720deg); }
+  }
+
+  /* HEADER */
+  header {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+    padding: 60px 20px 40px;
+  }
+
+  .logo-tapita {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 80px;
+    height: 80px;
+    background: var(--verde);
+    border-radius: 50%;
+    margin-bottom: 20px;
+    font-size: 38px;
+    box-shadow: 0 8px 30px rgba(45,106,79,0.35);
+    animation: latir 2.5s ease-in-out infinite;
+  }
+
+  @keyframes latir {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.06); }
+  }
+
+  h1 {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(2.2rem, 6vw, 3.8rem);
+    font-weight: 900;
+    line-height: 1.05;
+    color: var(--verde);
+  }
+
+  h1 span {
+    color: var(--naranja);
+    font-style: italic;
+  }
+
+  .subtitulo {
+    margin-top: 12px;
+    font-size: 1.05rem;
+    color: #6b7280;
+    font-weight: 500;
+    max-width: 460px;
+    margin-inline: auto;
+  }
+
+  /* STATS HERO */
+  .stats-hero {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    padding: 0 20px 40px;
+    position: relative;
+    z-index: 10;
+  }
+
+  .stat-card {
+    background: white;
+    border-radius: 20px;
+    padding: 22px 30px;
+    text-align: center;
+    min-width: 140px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    border: 2px solid transparent;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .stat-card:hover { transform: translateY(-4px); box-shadow: 0 8px 30px rgba(0,0,0,0.12); }
+  .stat-card:nth-child(1) { border-color: var(--verde-claro); }
+  .stat-card:nth-child(2) { border-color: var(--amarillo); }
+  .stat-card:nth-child(3) { border-color: var(--naranja); }
+
+  .stat-numero {
+    font-family: 'Fraunces', serif;
+    font-size: 2.2rem;
+    font-weight: 900;
+    color: var(--verde);
+    display: block;
+  }
+  .stat-card:nth-child(2) .stat-numero { color: #b8860b; }
+  .stat-card:nth-child(3) .stat-numero { color: var(--naranja); }
+
+  .stat-label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #9ca3af;
+    margin-top: 4px;
+  }
+
+  /* CONTENIDO PRINCIPAL */
+  .main-grid {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 30px;
+    max-width: 1050px;
+    margin: 0 auto;
+    padding: 0 20px 60px;
+    position: relative;
+    z-index: 10;
+  }
+
+  @media (max-width: 760px) {
+    .main-grid { grid-template-columns: 1fr; }
+  }
+
+  /* SECCIÓN RANKING */
+  .seccion-titulo {
+    font-family: 'Fraunces', serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--verde);
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  /* PODIO TOP 3 */
+  .podio {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+
+  .podio-item {
+    flex: 1;
+    max-width: 130px;
+    text-align: center;
+    animation: subirPodio 0.6s ease both;
+  }
+  .podio-item:nth-child(1) { animation-delay: 0.2s; }
+  .podio-item:nth-child(2) { animation-delay: 0s; order: -1; }
+  .podio-item:nth-child(3) { animation-delay: 0.4s; }
+
+  @keyframes subirPodio {
+    from { opacity: 0; transform: translateY(40px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .podio-corona {
+    font-size: 1.8rem;
+    margin-bottom: 4px;
+  }
+
+  .podio-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Fraunces', serif;
+    font-size: 1.4rem;
+    font-weight: 900;
+    margin: 0 auto 8px;
+    color: white;
+  }
+  .pos-1 .podio-avatar { width: 72px; height: 72px; background: linear-gradient(135deg, #f9c74f, #f77f00); font-size: 1.7rem; box-shadow: 0 6px 20px rgba(249,199,79,0.5); }
+  .pos-2 .podio-avatar { background: linear-gradient(135deg, #b0c4de, #708090); box-shadow: 0 4px 15px rgba(112,128,144,0.4); }
+  .pos-3 .podio-avatar { background: linear-gradient(135deg, #cd853f, #8b4513); box-shadow: 0 4px 15px rgba(205,133,63,0.4); }
+
+  .podio-nombre {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--marron);
+    margin-bottom: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .podio-cantidad {
+    font-family: 'Fraunces', serif;
+    font-size: 1.3rem;
+    font-weight: 900;
+    color: var(--verde);
+  }
+  .pos-1 .podio-cantidad { font-size: 1.6rem; color: var(--naranja); }
+
+  .podio-base {
+    border-radius: 12px 12px 0 0;
+    padding: 10px 8px 6px;
+    margin-top: 8px;
+  }
+  .pos-1 .podio-base { background: linear-gradient(180deg, rgba(249,199,79,0.2), rgba(249,199,79,0.05)); border: 2px solid rgba(249,199,79,0.4); height: 70px; }
+  .pos-2 .podio-base { background: linear-gradient(180deg, rgba(176,196,222,0.15), transparent); border: 2px solid rgba(176,196,222,0.3); height: 50px; }
+  .pos-3 .podio-base { background: linear-gradient(180deg, rgba(205,133,63,0.15), transparent); border: 2px solid rgba(205,133,63,0.3); height: 35px; }
+
+  /* LISTA COMPLETA */
+  .lista-ranking {
+    background: white;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.07);
+  }
+
+  .ranking-item {
+    display: grid;
+    grid-template-columns: 42px 1fr auto;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 20px;
+    border-bottom: 1px solid #f3f4f6;
+    transition: background 0.15s;
+    animation: aparecer 0.4s ease both;
+  }
+  .ranking-item:last-child { border-bottom: none; }
+  .ranking-item:hover { background: #fafafa; }
+
+  @keyframes aparecer {
+    from { opacity: 0; transform: translateX(-15px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+
+  .ranking-pos {
+    font-family: 'Fraunces', serif;
+    font-size: 1.1rem;
+    font-weight: 900;
+    color: #d1d5db;
+    text-align: center;
+  }
+  .ranking-item.top { }
+  .ranking-item:nth-child(1) .ranking-pos { color: var(--naranja); }
+  .ranking-item:nth-child(2) .ranking-pos { color: #708090; }
+  .ranking-item:nth-child(3) .ranking-pos { color: #cd853f; }
+
+  .ranking-info { }
+  .ranking-nombre {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--marron);
+  }
+
+  .ranking-barra-wrap {
+    height: 5px;
+    background: #f3f4f6;
+    border-radius: 3px;
+    margin-top: 5px;
+    overflow: hidden;
+  }
+  .ranking-barra {
+    height: 100%;
+    background: linear-gradient(90deg, var(--verde-claro), var(--verde));
+    border-radius: 3px;
+    transition: width 1s ease;
+    width: 0;
+  }
+
+  .ranking-tapitas {
+    font-family: 'Fraunces', serif;
+    font-size: 1.3rem;
+    font-weight: 900;
+    color: var(--verde);
+    white-space: nowrap;
+  }
+  .ranking-tapitas span {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 500;
+    color: #9ca3af;
+    display: block;
+    text-align: right;
+  }
+
+  /* ESTADO CARGANDO / ERROR */
+  .estado-msg {
+    text-align: center;
+    padding: 50px 20px;
+    color: #9ca3af;
+  }
+  .estado-msg .icono { font-size: 2.5rem; margin-bottom: 12px; }
+  .estado-msg p { font-size: 0.95rem; }
+  .spinner {
+    width: 36px; height: 36px;
+    border: 3px solid #e5e7eb;
+    border-top-color: var(--verde);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto 14px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* PANEL DERECHO */
+  .panel-der { display: flex; flex-direction: column; gap: 24px; }
+
+  /* CARD PREMIOS */
+  .card {
+    background: white;
+    border-radius: 20px;
+    padding: 26px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.07);
+  }
+
+  .premios-lista { display: flex; flex-direction: column; gap: 14px; }
+
+  .premio-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 14px;
+    border-radius: 14px;
+    background: var(--gris-suave);
+    transition: transform 0.2s;
+  }
+  .premio-item:hover { transform: translateX(4px); }
+
+  .premio-icono {
+    font-size: 1.8rem;
+    min-width: 42px;
+    text-align: center;
+  }
+
+  .premio-titulo {
+    font-weight: 700;
+    font-size: 0.92rem;
+    color: var(--verde);
+    margin-bottom: 3px;
+  }
+
+  .premio-desc {
+    font-size: 0.82rem;
+    color: #6b7280;
+    line-height: 1.4;
+  }
+
+  .premio-umbral {
+    display: inline-block;
+    background: var(--verde-menta);
+    color: var(--verde);
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 20px;
+    margin-top: 5px;
+  }
+
+  /* CARD INFO */
+  .info-item {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 14px;
+    align-items: flex-start;
+  }
+  .info-item:last-child { margin-bottom: 0; }
+  .info-icono { font-size: 1.3rem; min-width: 28px; }
+  .info-texto { font-size: 0.88rem; color: #4b5563; line-height: 1.5; }
+  .info-texto strong { color: var(--marron); }
+
+  /* FOOTER */
+  footer {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+    padding: 30px 20px;
+    font-size: 0.8rem;
+    color: #9ca3af;
+    border-top: 1px solid #e5e7eb;
+  }
+
+  .ultima-actualizacion {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--verde-menta);
+    color: var(--verde);
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-bottom: 16px;
+  }
+
+  .dot-live {
+    width: 7px; height: 7px;
+    background: var(--verde);
+    border-radius: 50%;
+    animation: parpadear 1.5s ease-in-out infinite;
+  }
+  @keyframes parpadear {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  /* BOTÓN RECARGAR */
+  .btn-recargar {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    background: var(--verde);
+    color: white;
+    border: none;
+    border-radius: 30px;
+    padding: 10px 22px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.15s;
+    margin-top: 12px;
+  }
+  .btn-recargar:hover { background: var(--naranja); transform: scale(1.03); }
+  .btn-recargar:active { transform: scale(0.97); }
+</style>
+</head>
+<body>
+
+<!-- Tapitas decorativas flotantes -->
+<div class="tapitas-bg" id="tapitasBg"></div>
+
+<header>
+  <div class="logo-tapita">♻️</div>
+  <h1>Colecta de <span>Tapitas</span></h1>
+  <p class="subtitulo">Cada tapita cuenta. Sumate a esta iniciativa solidaria y ayudá a hacer la diferencia.</p>
+</header>
+
+<div class="stats-hero">
+  <div class="stat-card">
+    <span class="stat-numero" id="statTotal">—</span>
+    <div class="stat-label">Tapitas totales</div>
+  </div>
+  <div class="stat-card">
+    <span class="stat-numero" id="statParticipantes">—</span>
+    <div class="stat-label">Participantes</div>
+  </div>
+  <div class="stat-card">
+    <span class="stat-numero" id="statLider">—</span>
+    <div class="stat-label">Líder actual</div>
+  </div>
+</div>
+
+<div class="main-grid">
+
+  <!-- RANKING -->
+  <div>
+    <div class="seccion-titulo">🏆 Ranking de participantes</div>
+    <div id="podioContainer" class="podio"></div>
+    <div class="lista-ranking" id="listaContainer">
+      <div class="estado-msg">
+        <div class="spinner"></div>
+        <p>Cargando ranking...</p>
+      </div>
+    </div>
+    <div style="text-align:center; margin-top:14px;">
+      <div class="ultima-actualizacion">
+        <div class="dot-live"></div>
+        <span id="ultimaAct">Actualizando...</span>
+      </div>
+      <br>
+      <button class="btn-recargar" onclick="cargarDatos()">↻ Actualizar ranking</button>
+    </div>
+  </div>
+
+  <!-- PANEL DERECHO -->
+  <div class="panel-der">
+
+    <!-- PREMIOS -->
+    <div class="card">
+      <div class="seccion-titulo">🎁 Premios</div>
+      <div class="premios-lista" id="premiosLista">
+        <!-- Se puede editar esta sección con los premios reales -->
+        <div class="premio-item">
+          <div class="premio-icono">🥇</div>
+          <div>
+            <div class="premio-titulo">1er lugar</div>
+            <div class="premio-desc">Premio especial para el/la ganador/a con más tapitas al finalizar la colecta.</div>
+            <span class="premio-umbral">+ de 500 tapitas</span>
+          </div>
+        </div>
+        <div class="premio-item">
+          <div class="premio-icono">🥈</div>
+          <div>
+            <div class="premio-titulo">2do lugar</div>
+            <div class="premio-desc">Premio sorpresa para el segundo puesto.</div>
+            <span class="premio-umbral">+ de 300 tapitas</span>
+          </div>
+        </div>
+        <div class="premio-item">
+          <div class="premio-icono">🥉</div>
+          <div>
+            <div class="premio-titulo">3er lugar</div>
+            <div class="premio-desc">Reconocimiento especial al tercer puesto.</div>
+            <span class="premio-umbral">+ de 150 tapitas</span>
+          </div>
+        </div>
+        <div class="premio-item">
+          <div class="premio-icono">🌟</div>
+          <div>
+            <div class="premio-titulo">Mención especial</div>
+            <div class="premio-desc">Para todos los que alcancen las 50 tapitas.</div>
+            <span class="premio-umbral">+ de 50 tapitas</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- INFO -->
+    <div class="card">
+      <div class="seccion-titulo">ℹ️ ¿Cómo participar?</div>
+      <div class="info-item">
+        <div class="info-icono">♻️</div>
+        <div class="info-texto"><strong>¿Qué tapitas?</strong> Tapitas de botellas de PVC/plástico. Sin etiquetas, limpias y secas.</div>
+      </div>
+      <div class="info-item">
+        <div class="info-icono">📍</div>
+        <div class="info-texto"><strong>¿Dónde entregar?</strong> Comunicarte con la organizadora para coordinar la entrega o punto de acopio.</div>
+      </div>
+      <div class="info-item">
+        <div class="info-icono">📅</div>
+        <div class="info-texto"><strong>¿Hasta cuándo?</strong> La colecta es continua. El ranking se actualiza regularmente.</div>
+      </div>
+      <div class="info-item">
+        <div class="info-icono">💚</div>
+        <div class="info-texto"><strong>¿Para qué sirve?</strong> Las tapitas se reciclan y el dinero obtenido se destina a una causa solidaria.</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<footer>
+  <div>Iniciativa solidaria sin fines de lucro • Hecho con 💚</div>
+</footer>
+
+<script>
+// =============================================
+//  ⚙️  CONFIGURACIÓN — EDITÁ ESTOS VALORES
+// =============================================
+
+// PASO 1: Publicá tu Google Sheet como CSV.
+//   En Google Sheets: Archivo → Compartir → Publicar en la web
+//   Elegí la hoja → formato CSV → Publicar
+//   Pegá la URL aquí:
+const SHEET_CSV_URL = "TU_URL_DE_GOOGLE_SHEETS_CSV_AQUI";
+
+// Columnas en tu planilla (índice desde 0):
+// Si tu hoja tiene: Nombre | Apellido | Tapitas
+const COL_NOMBRE   = 0;   // columna A
+const COL_APELLIDO = 1;   // columna B
+const COL_TAPITAS  = 2;   // columna C
+
+// =============================================
+//  DATOS DE DEMO (se usan si no hay Sheet real)
+// =============================================
+const DATOS_DEMO = [
+  { nombre: "María García",     tapitas: 487 },
+  { nombre: "Carlos Rodríguez", tapitas: 362 },
+  { nombre: "Ana Martínez",     tapitas: 291 },
+  { nombre: "Luis Fernández",   tapitas: 198 },
+  { nombre: "Sofía López",      tapitas: 174 },
+  { nombre: "Diego Pérez",      tapitas: 143 },
+  { nombre: "Valentina Ruiz",   tapitas: 98  },
+  { nombre: "Mateo González",   tapitas: 67  },
+  { nombre: "Julia Sánchez",    tapitas: 45  },
+  { nombre: "Pablo Torres",     tapitas: 23  },
+];
+
+// =============================================
+//  LÓGICA DE CARGA Y RENDER
+// =============================================
+
+async function cargarDatos() {
+  let datos = [];
+  let esModoDemo = false;
+
+  if (SHEET_CSV_URL.startsWith("http")) {
+    try {
+      // Usamos allorigins para evitar CORS
+      const proxy = `https://api.allorigins.win/raw?url=${encodeURIComponent(SHEET_CSV_URL)}`;
+      const resp = await fetch(proxy);
+      const texto = await resp.text();
+      datos = parsearCSV(texto);
+    } catch (e) {
+      console.warn("No se pudo cargar la planilla:", e);
+      datos = DATOS_DEMO;
+      esModoDemo = true;
+    }
+  } else {
+    datos = DATOS_DEMO;
+    esModoDemo = true;
+  }
+
+  datos.sort((a, b) => b.tapitas - a.tapitas);
+  renderizarTodo(datos, esModoDemo);
+}
+
+function parsearCSV(texto) {
+  const lineas = texto.trim().split("\n").slice(1); // salteamos cabecera
+  const resultado = [];
+  for (const linea of lineas) {
+    const cols = linea.split(",").map(c => c.trim().replace(/"/g, ""));
+    const nombre   = [cols[COL_NOMBRE], cols[COL_APELLIDO]].filter(Boolean).join(" ");
+    const tapitas  = parseInt(cols[COL_TAPITAS]) || 0;
+    if (nombre && tapitas > 0) resultado.push({ nombre, tapitas });
+  }
+  return resultado;
+}
+
+function renderizarTodo(datos, esModoDemo) {
+  const max = datos[0]?.tapitas || 1;
+
+  // Stats
+  const total = datos.reduce((s, d) => s + d.tapitas, 0);
+  document.getElementById("statTotal").textContent       = total.toLocaleString("es-AR");
+  document.getElementById("statParticipantes").textContent = datos.length;
+  document.getElementById("statLider").textContent        = datos[0]?.nombre.split(" ")[0] || "—";
+
+  // Última actualización
+  document.getElementById("ultimaAct").textContent =
+    esModoDemo ? "Modo demo (configurá tu planilla)" :
+    "Actualizado: " + new Date().toLocaleTimeString("es-AR", { hour: "2-digit", minute: "2-digit" });
+
+  // Podio (top 3)
+  const podio = document.getElementById("podioContainer");
+  podio.innerHTML = "";
+  const top3 = datos.slice(0, 3);
+  // Orden visual: 2do | 1ro | 3ro
+  const orden = [top3[1], top3[0], top3[2]].filter(Boolean);
+  const medallas = ["🥈", "🥇", "🥉"];
+  const clases   = ["pos-2", "pos-1", "pos-3"];
+  const alturas  = ["50px", "70px", "35px"];
+
+  orden.forEach((p, i) => {
+    if (!p) return;
+    const posReal = datos.indexOf(p) + 1;
+    const letra   = p.nombre.trim().charAt(0).toUpperCase();
+    const div = document.createElement("div");
+    div.className = `podio-item ${clases[i]}`;
+    div.innerHTML = `
+      <div class="podio-corona">${medallas[i]}</div>
+      <div class="podio-avatar">${letra}</div>
+      <div class="podio-nombre">${p.nombre.split(" ")[0]}</div>
+      <div class="podio-cantidad">${p.tapitas.toLocaleString("es-AR")}</div>
+      <div class="podio-base" style="height:${alturas[i]}"></div>
+    `;
+    podio.appendChild(div);
+  });
+
+  // Lista completa
+  const lista = document.getElementById("listaContainer");
+  lista.innerHTML = "";
+  datos.forEach((p, i) => {
+    const pct = Math.round((p.tapitas / max) * 100);
+    const item = document.createElement("div");
+    item.className = "ranking-item";
+    item.style.animationDelay = `${i * 0.05}s`;
+    item.innerHTML = `
+      <div class="ranking-pos">${i + 1}</div>
+      <div class="ranking-info">
+        <div class="ranking-nombre">${p.nombre}</div>
+        <div class="ranking-barra-wrap">
+          <div class="ranking-barra" data-pct="${pct}"></div>
+        </div>
+      </div>
+      <div class="ranking-tapitas">
+        ${p.tapitas.toLocaleString("es-AR")}
+        <span>tapitas</span>
+      </div>
+    `;
+    lista.appendChild(item);
+  });
+
+  // Animar barras
+  setTimeout(() => {
+    document.querySelectorAll(".ranking-barra").forEach(b => {
+      b.style.width = b.dataset.pct + "%";
+    });
+  }, 100);
+}
+
+// Tapitas flotantes decorativas
+function crearTapitas() {
+  const colores = ["#52b788","#f9c74f","#f77f00","#2d6a4f","#b7e4c7"];
+  const cont = document.getElementById("tapitasBg");
+  for (let i = 0; i < 18; i++) {
+    const t = document.createElement("div");
+    t.className = "tapita-float";
+    t.style.left = Math.random() * 100 + "%";
+    t.style.bottom = "-50px";
+    t.style.background = colores[Math.floor(Math.random() * colores.length)];
+    t.style.animationDuration = (12 + Math.random() * 20) + "s";
+    t.style.animationDelay    = (Math.random() * 15) + "s";
+    t.style.width  = (16 + Math.random() * 20) + "px";
+    t.style.height = t.style.width;
+    cont.appendChild(t);
+  }
+}
+
+crearTapitas();
+cargarDatos();
+</script>
+</body>
+</html>
