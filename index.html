@@ -642,8 +642,7 @@ async function cargarDatos() {
 
   if (SHEET_CSV_URL.startsWith("http")) {
     try {
-      // Usamos allorigins para evitar CORS
-      const proxy = `https://api.allorigins.win/raw?url=${encodeURIComponent(SHEET_CSV_URL)}`;
+      const proxy = `https://corsproxy.io/?url=${encodeURIComponent(SHEET_CSV_URL)}`;
       const resp = await fetch(proxy);
       const texto = await resp.text();
       datos = parsearCSV(texto);
