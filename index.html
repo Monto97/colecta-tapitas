@@ -642,14 +642,18 @@ async function cargarDatos() {
 
   if (SHEET_CSV_URL.startsWith("http")) {
     try {
-      const proxy = `https://corsproxy.io/?url=${encodeURIComponent(SHEET_CSV_URL)}`;
-      const resp = await fetch(proxy);
-      const texto = await resp.text();
-      datos = parsearCSV(texto);
-    } catch (e) {
-      console.warn("No se pudo cargar la planilla:", e);
-      datos = DATOS_DEMO;
-      esModoDemo = true;
+      const resp = await fetch(SHEET_CSV_URL, { mode: "cors" });
+      if (resp.ok) {
+        const texto = await resp.text();
+        const parsed = parsearCSV(texto);
+        if (parsed.length > 0) { datos = parsed; }
+        else { datos = DATOS_DEMO; esModoDemo = true; }
+      } else {
+        datos = DATOS_DEMO; esModoDemo = true;
+      }
+    } catch(e) {
+      console.warn("Error cargando Sheet:", e);
+      datos = DATOS_DEMO; esModoDemo = true;
     }
   } else {
     datos = DATOS_DEMO;
