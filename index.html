@@ -608,13 +608,13 @@
 //   En Google Sheets: Archivo → Compartir → Publicar en la web
 //   Elegí la hoja → formato CSV → Publicar
 //   Pegá la URL aquí:
-const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/1srX79CI8wQgtyg3djII-ax_dz_i28-RxpLXA_NfgjXI/edit?usp=sharing";
+const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/1srX79CI8wQgtyg3djII-ax_dz_i28-RxpLXA_NfgjXI/export?format=csv&gid=0";
 
 // Columnas en tu planilla (índice desde 0):
-// Si tu hoja tiene: Nombre | Apellido | Tapitas
+// Columna A = Nombre completo, Columna B = Tapitas
 const COL_NOMBRE   = 0;   // columna A
-const COL_APELLIDO = 1;   // columna B
-const COL_TAPITAS  = 2;   // columna C
+const COL_APELLIDO = -1;  // no se usa
+const COL_TAPITAS  = 1;   // columna B
 
 // =============================================
 //  DATOS DE DEMO (se usan si no hay Sheet real)
@@ -662,12 +662,12 @@ async function cargarDatos() {
 }
 
 function parsearCSV(texto) {
-  const lineas = texto.trim().split("\n").slice(1); // salteamos cabecera
+  const lineas = texto.trim().split("\n");
   const resultado = [];
   for (const linea of lineas) {
     const cols = linea.split(",").map(c => c.trim().replace(/"/g, ""));
-    const nombre   = [cols[COL_NOMBRE], cols[COL_APELLIDO]].filter(Boolean).join(" ");
-    const tapitas  = parseInt(cols[COL_TAPITAS]) || 0;
+    const nombre  = cols[COL_NOMBRE] || "";
+    const tapitas = parseInt(cols[COL_TAPITAS]) || 0;
     if (nombre && tapitas > 0) resultado.push({ nombre, tapitas });
   }
   return resultado;
